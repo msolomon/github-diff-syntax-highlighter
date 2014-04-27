@@ -1,7 +1,36 @@
 
+## Helper functions
+
 logMessages = (messages...) ->
     console.log '[GitHub diff highlighter]', messages...
 
+longestCommonPrefix = (strings...) ->
+    prefix = []
+    firstString = strings[0]
+    combinePrefix = => prefix.join('')
+
+    if strings.length < 2
+        return combinePrefix()
+
+    for i in [0...firstString.length]
+        for string in strings[1..]
+            if string[i] != firstString[i]
+                return combinePrefix()
+        prefix.push firstString[i]
+
+    return combinePrefix()
+
+dropNonexisting = (array) ->
+    (element for element in array when element?) || []
+
+notEmpty = (array) ->
+    if array.length > 0 then array else null
+
+unique = (array) ->
+    array.filter((value, index, self) -> self.indexOf(value) == index)
+
+
+# An HTML tag that is being merged in with text and other HTML tags
 class HtmlTag
     tagTypeRegex = /<(\/?)\s*(\w+).*?(\/?)\w*>/
 
@@ -18,6 +47,8 @@ class HtmlTag
     getText: -> @tag
     getClosingTagText: -> "</#{@tagType}>"
 
+
+# A stack of HtmlTags to assist merging two strings of tags
 class TagStack
     constructor: ->
         @tagStack = []
@@ -26,7 +57,7 @@ class TagStack
         if tag.isClosingTag()
             openingTag = @tagStack.pop()
             unless tag.canClose(openingTag) and openingTag.isOpeningTag()
-                logMessages 'Tags do not match: ' + tag.tag + " cannot close " + openingTag.tag
+                throw 'Tags do not match: ' + tag.tag + " cannot close " + openingTag.tag
         else
             @tagStack.push tag
 
@@ -56,6 +87,8 @@ class TagStack
                        return earlyStack.getPrematurelyClosedTagsFromIndex earlyStackTagIndex
         return []
 
+
+# Splits an HTML line into tags and text while tracking the current position
 class HtmlLineSplitter
     constructor: (@line) ->
         @tagRegex = /(<[^>]*?>)|([^<]*)/g
@@ -86,31 +119,7 @@ class HtmlLineSplitter
         else
             @setContent previous.substr(prefix.length)
 
-longestCommonPrefix = (strings...) ->
-    prefix = []
-    firstString = strings[0]
-    combinePrefix = => prefix.join('')
-
-    if strings.length < 2
-        return combinePrefix()
-
-    for i in [0...firstString.length]
-        for string in strings[1..]
-            if string[i] != firstString[i]
-                return combinePrefix()
-        prefix.push firstString[i]
-
-    return combinePrefix()
-
-dropNonexisting = (array) ->
-    (element for element in array when element?) || []
-
-notEmpty = (array) ->
-    if array.length > 0 then array else undefined
-
-unique = (array) ->
-    array.filter((value, index, self) -> self.indexOf(value) == index)
-
+# merge two HTML strings that differ only by HTML tags
 class LineMerger
     constructor: (highlightedLine, diffLine) ->
         @highlighted = new HtmlLineSplitter highlightedLine
@@ -129,8 +138,7 @@ class LineMerger
             @highlighted.removeTextPrefix prefix
             @diff.removeTextPrefix prefix
         else
-            message = 'Could not find prefix:\n' + @highlighted.getContent() + '\n' + @diff.getContent() + '\n'
-            throw message
+            throw 'Could not find prefix:\n' + @highlighted.getContent() + '\n' + @diff.getContent() + '\n'
 
     mergeTagIntoOutput: (splitter, stack) ->
         otherStack = if stack isnt @diffStack then @diffStack else @highlightedStack
@@ -164,6 +172,8 @@ class LineMerger
 
         @output.join('')
 
+
+# A text file made of Lines
 class File
     constructor: (@path) ->
         @lines = []
@@ -181,6 +191,8 @@ class File
 
     getLine: (index) -> @lines[index]
 
+
+# A line in a text file
 class Line
     nonBreakingSpaceRegex = /&nbsp;/g
     constructor: (@lineElement, @line, @lineNumber) ->
@@ -195,6 +207,8 @@ class Line
     diffRemoved: -> @diffMarker == '-'
     diffUnchanged: -> !@diffAdded() && !@diffRemoved() && @diffMarker != '@'
 
+
+# Fetches, stores, and highlights diffs on a GitHub page
 class DiffProcessor
     currentRepoPath = window.location.pathname.match(/\/[^\/]*\/[^\/]*\//)[0]
     endsInShaRegex = /[0-9a-fA-F]{40}$/
@@ -382,6 +396,8 @@ class DiffProcessor
         @fetchParentHtml()
 
 
+## Bootstrap and run
+
 # fix GitHub's css to not force black text on character-by-character diffs
 style = document.createElement('style')
 style.type = 'text/css'
@@ -394,5 +410,3 @@ document.getElementsByTagName('head')[0].appendChild(style)
 
 diffProcessor = new DiffProcessor()
 diffProcessor.fetchAndHighlight()
-
-
