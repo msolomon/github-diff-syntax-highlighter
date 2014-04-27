@@ -216,7 +216,6 @@ class DiffProcessor
     constructor: ->
         @currentCommitIdentifier = @getGuessAtCurrentCommitIdentifier()
         @parentCommitIdentifiers = @getParentCommitIdentifiers()
-        console.log @parentCommitIdentifiers
         @changedFilePaths = @getChangedFilePaths()
         @inlineChangedFilePaths = @getInlineChangedFilePaths()
         @diffData = @getRegularDiffData()
@@ -225,8 +224,6 @@ class DiffProcessor
         @currentData = {}
         @numPagesToFetchBeforeProcessing = (@parentCommitIdentifiers.length + [@currentCommitIdentifier].length) * @changedFilePaths.length
         @registeredModifiedEventHandler = false
-        console.log this
-
 
     getMergingBranchCommitIdentifier: (index) ->
         element = document.querySelectorAll('#js-discussion-header .gh-header-meta span.commit-ref.current-branch span')[index] ||
@@ -274,9 +271,6 @@ class DiffProcessor
     highlightWhenDataReady: ->
         if @numPagesToFetchBeforeProcessing > 0
             return
-
-        console.log 'ready to go!'
-        console.log this
 
         @highlightDiffData @inlineDiffData
         @highlightDiffData @diffData
