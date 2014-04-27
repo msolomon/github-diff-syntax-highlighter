@@ -1,0 +1,27 @@
+{
+  "manifest_version": 2,
+  "name": "GitHub diff syntax highlighter",
+  "version": "1.0",
+  "description": "Use GitHub's own syntax highlighting for diffs on GitHub",
+  "icons": {
+    "128": "icon-128.png"
+  },
+  "permissions": [
+    "https://github.com/"
+  ],
+  "web_accessible_resources": [
+    "diff-highlighter.coffee",
+    "diff-highlighter.map"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://github.com/*"
+      ],
+      "js": [
+        "diff-highlighter.js"
+      ]
+    }
+  ],
+  "author": "Mike Solomon"
+}
