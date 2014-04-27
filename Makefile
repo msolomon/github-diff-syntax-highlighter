@@ -11,3 +11,8 @@ chrome:
 firefox:
 
 safari:
+	mkdir -p build/safari.safariextension
+	cp Info.plist diff-highlighter.* icon-*.png build/safari.safariextension/
+
+clean:
+	rm -r build
