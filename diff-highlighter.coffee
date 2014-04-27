@@ -1,3 +1,4 @@
+# Mike Solomon 2014
 
 ## Helper functions
 
