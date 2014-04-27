@@ -26,7 +26,7 @@ build/jetpack-sdk-latest.zip:
 	cd build && unzip -q jetpack-sdk-latest.zip
 
 diff-highlighter.js: diff-highlighter.coffee
-	coffee -c diff-highlighter
+	coffee -c diff-highlighter.coffee
 
 clean:
 	rm -r build
