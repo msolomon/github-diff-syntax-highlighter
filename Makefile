@@ -2,13 +2,17 @@
 
 all: chrome firefox safari
 
-chrome:
+chrome: diff-highlighter.js
 	mkdir -p build/chrome
 	cp manifest.json diff-highlighter.* icon-128.png build/chrome/
 	rm -f build/chrome/extension.zip
 	cd build/chrome && zip extension.zip *
 
-firefox: build/firefox/jetpack-sdk-latest.zip
+safari: diff-highlighter.js
+	mkdir -p build/safari.safariextension
+	cp Info.plist diff-highlighter.* icon-*.png build/safari.safariextension/
+
+firefox: build/jetpack-sdk-latest.zip diff-highlighter.js
 	mkdir -p build/firefox
 	mkdir -p build/firefox/lib
 	mkdir -p build/firefox/data
@@ -19,11 +23,10 @@ firefox: build/firefox/jetpack-sdk-latest.zip
 build/jetpack-sdk-latest.zip:
 	mkdir -p build
 	cd build && wget https://ftp.mozilla.org/pub/mozilla.org/labs/jetpack/jetpack-sdk-latest.zip
-	cd build && unzip jetpack-sdk-latest.zip
+	cd build && unzip -q jetpack-sdk-latest.zip
 
-safari:
-	mkdir -p build/safari.safariextension
-	cp Info.plist diff-highlighter.* icon-*.png build/safari.safariextension/
+diff-highlighter.js: diff-highlighter.coffee
+	coffee -c diff-highlighter
 
 clean:
 	rm -r build
