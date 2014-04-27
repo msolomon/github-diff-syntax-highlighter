@@ -1,0 +1,11 @@
+{
+  "name": "github-diff-syntax-highlighter",
+  "title": "GitHub diff syntax highlighter",
+  "id": "jid1-h7mZ8WNahLC7dw",
+  "description": "Use GitHub's own syntax highlighting for diffs on GitHub",
+  "author": "Mike Solomon",
+  "homepage": "https://github.com/msolomon/github-diff-syntax-highlighter",
+  "icon64": "icon-64.png",
+  "license": "MPL 2.0",
+  "version": "1.0.0"
+}
