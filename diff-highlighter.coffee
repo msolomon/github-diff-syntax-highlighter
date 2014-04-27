@@ -248,15 +248,17 @@ class DiffProcessor
     getMergingBranchFrom: -> @getMergingBranchFromFromComment()
 
     getParentCommitIdentifiers: ->
-        console.log '@@', @getMergingBranchCommitIdentifier 0
         notEmpty(dropNonexisting([@getMergingBranchTo()])) ||
         notEmpty(endsInShaRegex.exec(e.href)?[0] for e in document.querySelectorAll('.commit-meta .sha-block a.sha')) ||
         dropNonexisting([@getMergingBranchCommitIdentifier 0])
 
-
     getChangedFilePaths: ->
         changedFileLinks = document.querySelectorAll('.file .info span.js-selectable-text')
-        link.innerText.trim() for link in changedFileLinks
+        for link in changedFileLinks
+            path = link.innerText.trim()
+            if path.indexOf('→') != -1
+                path = link.parentElement?.parentElement?.getAttribute('data-path')
+            path
 
     getInlineChangedFilePaths: ->
         e.getAttribute('data-path') for e in document.querySelectorAll('.inline-review-comment .box-header')
@@ -298,8 +300,6 @@ class DiffProcessor
             if (new Date() - @changeLastTriggered) >= 100
                 callback()
         , 100)
-
-
 
     highlightDiffData: (diffData) ->
         for filePath, fileList of diffData
