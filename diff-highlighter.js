@@ -471,19 +471,19 @@
     };
 
     DiffProcessor.prototype.getLinesToMerge = function(filePath, line) {
-      var id;
+      var id, _ref;
 
       if (line.diffAdded() || line.diffUnchanged()) {
-        return dropNonexisting([this.currentData[filePath].getLine(line.lineNumber)]);
+        return dropNonexisting([(_ref = this.currentData[filePath]) != null ? _ref.getLine(line.lineNumber) : void 0]);
       } else if (line.diffRemoved()) {
         return dropNonexisting((function() {
-          var _i, _len, _ref, _ref1, _ref2, _results;
+          var _i, _len, _ref1, _ref2, _ref3, _results;
 
-          _ref = this.parentCommitIdentifiers;
+          _ref1 = this.parentCommitIdentifiers;
           _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            id = _ref[_i];
-            _results.push((_ref1 = this.parentData[id]) != null ? (_ref2 = _ref1[filePath]) != null ? _ref2.getLine(line.lineNumberPrevious) : void 0 : void 0);
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            id = _ref1[_i];
+            _results.push((_ref2 = this.parentData[id]) != null ? (_ref3 = _ref2[filePath]) != null ? _ref3.getLine(line.lineNumberPrevious) : void 0 : void 0);
           }
           return _results;
         }).call(this));
@@ -747,3 +747,7 @@
   diffProcessor.fetchAndHighlight();
 
 }).call(this);
+
+/*
+//@ sourceMappingURL=diff-highlighter.map
+*/
