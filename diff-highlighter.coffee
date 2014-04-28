@@ -263,7 +263,7 @@ class DiffProcessor
 
     getLinesToMerge: (filePath, line) ->
         if line.diffAdded() or line.diffUnchanged()
-            dropNonexisting [@currentData[filePath].getLine(line.lineNumber)]
+            dropNonexisting [@currentData[filePath]?.getLine(line.lineNumber)]
         else if line.diffRemoved()
             dropNonexisting (@parentData[id]?[filePath]?.getLine(line.lineNumberPrevious) for id in @parentCommitIdentifiers)
         else
