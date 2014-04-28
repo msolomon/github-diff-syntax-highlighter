@@ -253,8 +253,8 @@ class DiffProcessor
     getChangedFilePaths: ->
         changedFileLinks = document.querySelectorAll('.file .info span.js-selectable-text')
         for link in changedFileLinks
-            path = link.innerText.trim()
-            if path.indexOf('→') != -1
+            path = link.innerText?.trim()
+            if path?.indexOf('→') != -1
                 path = link.parentElement?.parentElement?.getAttribute('data-path')
             path
 

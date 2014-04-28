@@ -443,15 +443,15 @@
     };
 
     DiffProcessor.prototype.getChangedFilePaths = function() {
-      var changedFileLinks, link, path, _i, _len, _ref, _ref1, _results;
+      var changedFileLinks, link, path, _i, _len, _ref, _ref1, _ref2, _results;
 
       changedFileLinks = document.querySelectorAll('.file .info span.js-selectable-text');
       _results = [];
       for (_i = 0, _len = changedFileLinks.length; _i < _len; _i++) {
         link = changedFileLinks[_i];
-        path = link.innerText.trim();
-        if (path.indexOf('→') !== -1) {
-          path = (_ref = link.parentElement) != null ? (_ref1 = _ref.parentElement) != null ? _ref1.getAttribute('data-path') : void 0 : void 0;
+        path = (_ref = link.innerText) != null ? _ref.trim() : void 0;
+        if ((path != null ? path.indexOf('→') : void 0) !== -1) {
+          path = (_ref1 = link.parentElement) != null ? (_ref2 = _ref1.parentElement) != null ? _ref2.getAttribute('data-path') : void 0 : void 0;
         }
         _results.push(path);
       }
