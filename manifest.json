@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "GitHub diff syntax highlighter",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Use GitHub's own syntax highlighting for diffs on GitHub",
   "icons": {
     "128": "icon-128.png"
