@@ -236,12 +236,12 @@ class DiffProcessor
     getMergingBranchCommitIdentifier: (index) ->
         element = document.querySelectorAll('#js-discussion-header .gh-header-meta span.commit-ref.current-branch span')[index] ||
             document.querySelectorAll('.branch-name span.js-selectable-text')[index]
-        element.innerText?.trim()
+        element?.innerText?.trim()
 
     getGuessAtCurrentCommitIdentifier: ->
         result = @getMergingBranchFromFromComment()
         result ||= document.body.querySelector('.commandbar input')?.getAttribute('data-branch')
-        result ||= document.body.innerHTML.match(/commit\/([a-f0-9]{40})/)[1]
+        result ||= document.body.innerHTML.match(/commit\/([a-f0-9]{40})/)?[1]
         result || @getMergingBranchCommitIdentifier 1
 
     getMergingBranchFromFromComment: ->
