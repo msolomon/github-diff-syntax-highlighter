@@ -335,7 +335,7 @@ class DiffProcessor
         blobPrefix = @buildBlobPrefixFromCommitIdentifier(@currentCommitIdentifier)
         for filePath in @changedFilePaths
             @currentData[filePath] = file = new File(filePath)
-            @fetchPageHtml blobPrefix + filePath, @getStoreHtml(file)
+            @fetchPageHtml blobPrefix + encodeURIComponent(filePath), @getStoreHtml(file)
 
     getStoreHtml: (htmlFile) ->
         (error, html) =>
@@ -353,7 +353,7 @@ class DiffProcessor
             @parentData[parent] ||= {}
             for filePath in @changedFilePaths
                 @parentData[parent][filePath] = file = new File(filePath)
-                @fetchPageHtml blobPrefix + filePath, @getStoreHtml(file)
+                @fetchPageHtml blobPrefix + encodeURIComponent(filePath), @getStoreHtml(file)
 
 
     getFilesFromHtmlText: (htmlText) ->
