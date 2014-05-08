@@ -30,6 +30,12 @@ notEmpty = (array) ->
 unique = (array) ->
     array.filter((value, index, self) -> self.indexOf(value) == index)
 
+addedElements = (oldArray, newArray) ->
+    for element in newArray
+        if oldArray.indexOf(element) == -1
+            return true
+    return false
+
 
 # An HTML tag that is being merged in with text and other HTML tags
 class HtmlTag
@@ -217,14 +223,15 @@ class DiffProcessor
     constructor: ->
         @currentCommitIdentifier = @getGuessAtCurrentCommitIdentifier()
         @parentCommitIdentifiers = @getParentCommitIdentifiers()
-        @changedFilePaths = @getChangedFilePaths()
-        @inlineChangedFilePaths = @getInlineChangedFilePaths()
+        @changedFilePaths = []
+        @inlineChangedFilePaths = []
+        @updateChangedFilePaths()
         @diffData = @getRegularDiffData()
         @inlineDiffData = @getInlineDiffData()
         @parentData = {}
         @currentData = {}
-        @numPagesToFetchBeforeProcessing = (@parentCommitIdentifiers.length + [@currentCommitIdentifier].length) * @changedFilePaths.length
         @registeredModifiedEventHandler = false
+        @mutationObserver = new MutationObserver @refreshDataAndHighlight
 
     getMergingBranchCommitIdentifier: (index) ->
         element = document.querySelectorAll('#js-discussion-header .gh-header-meta span.commit-ref.current-branch span')[index] ||
@@ -250,6 +257,20 @@ class DiffProcessor
         notEmpty(endsInShaRegex.exec(e.href)?[0] for e in document.querySelectorAll('.commit-meta .sha-block a.sha')) ||
         dropNonexisting([@getMergingBranchCommitIdentifier 0])
 
+    updateChangedFilePaths: ->
+        changed = false
+        changedFilePaths = @getChangedFilePaths()
+        if addedElements(@changedFilePaths, changedFilePaths)
+            changed = true
+        @changedFilePaths = changedFilePaths
+
+        inlineChangedFilePaths = @getInlineChangedFilePaths()
+        if addedElements(@inlineChangedFilePaths, inlineChangedFilePaths)
+            changed = true
+        @inlineChangedFilePaths = inlineChangedFilePaths
+
+        changed
+
     getChangedFilePaths: ->
         changedFileLinks = document.querySelectorAll('.file .info span.js-selectable-text')
         for link in changedFileLinks
@@ -270,31 +291,12 @@ class DiffProcessor
             []
 
     highlightWhenDataReady: ->
-        if @numPagesToFetchBeforeProcessing > 0
-            return
 
         @highlightDiffData @inlineDiffData
         @highlightDiffData @diffData
 
-        unless @registeredModifiedEventHandler
-            @registeredModifiedEventHandler = true
-            document.addEventListener('DOMNodeInserted', =>
-                @bucketMultipleEvents @refreshDataAndHighlight
-            , false, true)
-
-            setTimeout(@refreshDataAndHighlight, 2000)
-
-    refreshDataAndHighlight: =>
-        @diffData = @getRegularDiffData()
-        @inlineDiffData = @getInlineDiffData()
-        @highlightWhenDataReady()
-
-    bucketMultipleEvents: (callback) =>
-        @changeLastTriggered = new Date()
-        setTimeout(=>
-            if (new Date() - @changeLastTriggered) >= 100
-                callback()
-        , 100)
+        observerConfig = {childList: true, characterData: true, subtree: true}
+        @mutationObserver.observe document, observerConfig
 
     highlightDiffData: (diffData) ->
         for filePath, fileList of diffData
@@ -316,11 +318,10 @@ class DiffProcessor
 
         xhr.onerror = =>
             logMessages xhr.status, xhr
-            @numPagesToFetchBeforeProcessing--
+            @highlightWhenDataReady()
         xhr.onload = =>
             if xhr.status == 200
                 callback null, xhr.responseText
-                @numPagesToFetchBeforeProcessing--
                 @highlightWhenDataReady()
             else
                 xhr.onerror xhr
@@ -389,6 +390,16 @@ class DiffProcessor
     fetchAndHighlight: ->
         @fetchCurrentHtml()
         @fetchParentHtml()
+
+    refreshDataAndHighlight: (mutations) =>
+        changed = @updateChangedFilePaths()
+        if changed
+            @mutationObserver.disconnect()
+            diffProcessor = new DiffProcessor()
+            diffProcessor.fetchAndHighlight()
+        @diffData = @getRegularDiffData()
+        @inlineDiffData = @getInlineDiffData()
+        @highlightWhenDataReady()
 
 
 ## Bootstrap and run
