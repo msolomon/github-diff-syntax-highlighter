@@ -211,7 +211,7 @@ class Line
 
 # Fetches, stores, and highlights diffs on a GitHub page
 class DiffProcessor
-    currentRepoPath = window.location.pathname.match(/\/[^\/]*\/[^\/]*\//)[0]
+    currentRepoPath = window.location.pathname.match(/(\/[^\/]*\/[^\/]*)\/?/)[1] + '/'
     endsInShaRegex = /[0-9a-fA-F]{40}$/
 
     constructor: ->
