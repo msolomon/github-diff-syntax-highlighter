@@ -232,12 +232,20 @@ class DiffProcessor
         @changedFilePaths = []
         @inlineChangedFilePaths = []
         @updateChangedFilePaths()
+
         @diffData = @getRegularDiffData()
         @inlineDiffData = @getInlineDiffData()
+
         @parentData = {}
         @currentData = {}
-        @registeredModifiedEventHandler = false
-        @mutationObserver = new MutationObserver @refreshDataAndHighlight
+
+        @mutationObserver = @getMutationObserver()
+
+    getMutationObserver: ->
+        mutationObserver = new MutationObserver @refreshDataAndHighlight
+        observerConfig = {childList: true, characterData: true, subtree: true}
+        mutationObserver.observe document, observerConfig
+        mutationObserver
 
     getMergingBranchCommitIdentifier: (index) ->
         element = document.querySelectorAll('#js-discussion-header .gh-header-meta span.commit-ref.current-branch span')[index] ||
@@ -325,9 +333,6 @@ class DiffProcessor
 
         @highlightDiffData @inlineDiffData
         @highlightDiffData @diffData
-
-        observerConfig = {childList: true, characterData: true, subtree: true}
-        @mutationObserver.observe document, observerConfig
 
     highlightDiffData: (diffData) ->
         for filePath, fileList of diffData
