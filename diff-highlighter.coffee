@@ -221,6 +221,7 @@ class Line
 # Fetches, stores, and highlights diffs on a GitHub page
 class DiffProcessor
     endsInShaRegex = /[0-9a-fA-F]{40}$/
+    binRegex = /bin/i
 
     constructor: ->
         @currentRepoPath = ''
@@ -313,8 +314,11 @@ class DiffProcessor
     getChangedFilePaths: ->
         changedFileLinks = document.querySelectorAll('.file .info span.js-selectable-text')
         for link in changedFileLinks
-            path = link.innerText?.trim()
+            if binRegex.test link.parentElement?.childNodes[1].textContent
+                continue # exclude binary files
+            path = link.textContent?.trim()
             if path?.indexOf('→') != -1
+                # file was renamed. we don't usually have enough info to get the LHS of the diff, unfortunately
                 path = link.parentElement?.parentElement?.getAttribute('data-path')
             path
 
