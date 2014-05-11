@@ -377,6 +377,8 @@ class DiffProcessor
 
     getStoreHtml: (htmlFile) ->
         (error, html) =>
+            if error
+                return
             files = @getFilesFromHtmlText html
             for file in files
                 for line in file.querySelectorAll('.line')
