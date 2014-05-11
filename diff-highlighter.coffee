@@ -337,8 +337,9 @@ class DiffProcessor
     highlightDiffData: (diffData) ->
         for filePath, fileList of diffData
             for file in fileList
-                for _, line of file.lines
-                    if line.lineElement.getAttribute('github-diff-highlighter-highlighted')?
+                for key, line of file.lines
+                    if line?.lineElement.getAttribute('github-diff-highlighter-highlighted')?
+                        file[key] = null
                         continue
                     for mergeLine in @getLinesToMerge filePath, line
                         try
