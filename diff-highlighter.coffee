@@ -36,6 +36,9 @@ addedElements = (oldArray, newArray) ->
             return true
     return false
 
+urlEncodeFilePath = (filePath) ->
+    encodeURIComponent(filePath).replace(/%2F/g, '/')
+
 
 # An HTML tag that is being merged in with text and other HTML tags
 class HtmlTag
@@ -336,7 +339,7 @@ class DiffProcessor
         blobPrefix = @buildBlobPrefixFromCommitIdentifier(@currentCommitIdentifier)
         for filePath in @changedFilePaths
             @currentData[filePath] = file = new File(filePath)
-            @fetchPageHtml blobPrefix + encodeURIComponent(filePath), @getStoreHtml(file)
+            @fetchPageHtml blobPrefix + urlEncodeFilePath(filePath), @getStoreHtml(file)
 
     getStoreHtml: (htmlFile) ->
         (error, html) =>
@@ -354,7 +357,7 @@ class DiffProcessor
             @parentData[parent] ||= {}
             for filePath in @changedFilePaths
                 @parentData[parent][filePath] = file = new File(filePath)
-                @fetchPageHtml blobPrefix + encodeURIComponent(filePath), @getStoreHtml(file)
+                @fetchPageHtml blobPrefix + urlEncodeFilePath(filePath), @getStoreHtml(file)
 
 
     getFilesFromHtmlText: (htmlText) ->
