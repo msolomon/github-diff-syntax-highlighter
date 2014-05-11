@@ -3,7 +3,7 @@
 ## Helper functions
 
 logMessages = (messages...) ->
-    console.log '[GitHub diff highlighter]', messages...
+    # console.log '[GitHub diff highlighter]', messages...
 
 longestCommonPrefix = (strings...) ->
     prefix = []
