@@ -220,12 +220,15 @@ class Line
 
 # Fetches, stores, and highlights diffs on a GitHub page
 class DiffProcessor
-    currentRepoPath = window.location.pathname.match(/(\/[^\/]*\/[^\/]*)\/?/)[1] + '/'
     endsInShaRegex = /[0-9a-fA-F]{40}$/
 
     constructor: ->
-        @currentCommitIdentifier = @getGuessAtCurrentCommitIdentifier()
-        @parentCommitIdentifiers = @getParentCommitIdentifiers()
+        @currentRepoPath = ''
+        @updateCurrentRepoPath()
+        @currentCommitIdentifier = ''
+        @parentCommitIdentifiers = ''
+        @updateCommitIdentifiers()
+
         @changedFilePaths = []
         @inlineChangedFilePaths = []
         @updateChangedFilePaths()
@@ -260,6 +263,31 @@ class DiffProcessor
         notEmpty(endsInShaRegex.exec(e.href)?[0] for e in document.querySelectorAll('.commit-meta .sha-block a.sha')) ||
         dropNonexisting([@getMergingBranchCommitIdentifier 0])
 
+    updateCurrentRepoPath: ->
+        changed = false
+
+        currentRepoPath = window.location.pathname.match(/\/([^\/]*\/[^\/]*)/)[1]
+        if currentRepoPath != @currentRepoPath
+            @currentRepoPath = currentRepoPath
+            changed = true
+
+        changed
+
+    updateCommitIdentifiers: ->
+        changed = false
+
+        currentCommitIdentifier = @getGuessAtCurrentCommitIdentifier()
+        if currentCommitIdentifier != @currentCommitIdentifier
+            @currentCommitIdentifier = currentCommitIdentifier
+            changed = true
+
+        parentCommitIdentifiers = @getParentCommitIdentifiers()
+        if parentCommitIdentifiers.toString() != @parentCommitIdentifiers.toString()
+            @parentCommitIdentifiers = parentCommitIdentifiers
+            changed = true
+
+        changed
+
     updateChangedFilePaths: ->
         changed = false
         changedFilePaths = @getChangedFilePaths()
@@ -293,7 +321,7 @@ class DiffProcessor
         else
             []
 
-    highlightWhenDataReady: ->
+    highlight: ->
 
         @highlightDiffData @inlineDiffData
         @highlightDiffData @diffData
@@ -321,11 +349,11 @@ class DiffProcessor
 
         xhr.onerror = =>
             logMessages xhr.status, xhr
-            @highlightWhenDataReady()
+
         xhr.onload = =>
             if xhr.status == 200
                 callback null, xhr.responseText
-                @highlightWhenDataReady()
+                @highlight()
             else
                 xhr.onerror xhr
 
@@ -395,15 +423,18 @@ class DiffProcessor
         @fetchParentHtml()
 
     refreshDataAndHighlight: (mutations) =>
-        changed = @updateChangedFilePaths()
+        changed = @updateCurrentRepoPath()
+        changed ||= @updateChangedFilePaths()
+        changed ||= @updateCommitIdentifiers()
         if changed
+            # we appear to be on a new page. reset entirely
             @mutationObserver.disconnect()
-            diffProcessor = new DiffProcessor()
-            diffProcessor.fetchAndHighlight()
+            window.diffProcessor.constructor()
+            window.diffProcessor.fetchAndHighlight()
+            return
         @diffData = @getRegularDiffData()
         @inlineDiffData = @getInlineDiffData()
-        @highlightWhenDataReady()
-
+        @highlight()
 
 ## Bootstrap and run
 
@@ -417,5 +448,5 @@ style.innerHTML = '''
 '''
 document.getElementsByTagName('head')[0].appendChild(style)
 
-diffProcessor = new DiffProcessor()
-diffProcessor.fetchAndHighlight()
+window.diffProcessor = new DiffProcessor()
+window.diffProcessor.fetchAndHighlight()
