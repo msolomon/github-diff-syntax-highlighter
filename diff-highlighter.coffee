@@ -366,7 +366,7 @@ class DiffProcessor
         xhr.open "GET", url
         xhr.send()
 
-    buildBlobPrefixFromCommitIdentifier: (sha) -> "https://github.com#{currentRepoPath}tree/#{sha}/"
+    buildBlobPrefixFromCommitIdentifier: (sha) -> "https://github.com/#{@currentRepoPath}/tree/#{sha}/"
     buildBlobPrefixFromCommitUrl: (commitUrl) -> @buildCommitPathFromSha @endsInShaRegex.exec(commitUrl)[0]
 
     fetchCurrentHtml: ->
