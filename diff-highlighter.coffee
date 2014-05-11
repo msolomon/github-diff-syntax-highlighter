@@ -254,7 +254,7 @@ class DiffProcessor
 
     getGuessAtCurrentCommitIdentifier: ->
         result = @getMergingBranchFromFromComment()
-        result ||= document.querySelector('.commit a').href.match(/[a-f0-9]{40}$/)?[0]
+        result ||= document.querySelector('.commit a')?.href?.match(/[a-f0-9]{40}$/)?[0]
         result ||= document.body.innerHTML.match(/commit\/([a-f0-9]{40})/)?[1]
         result || @getMergingBranchCommitIdentifier 1
 
