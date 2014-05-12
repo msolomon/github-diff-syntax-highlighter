@@ -19,6 +19,7 @@ It also has some disadvantages:
 1. On large diffs, it can require many additional network requests before it will begin its work (this could be somewhat alleviated).
 1. Because there are many contexts in which diffs appear and the HTML differs for each, I probably missed some cases.
 1. Due to the brittle design of the whole thing (which essentially merges different GitHub pages into one and has to handle many special cases), it may become out of date at any time and I may or may not have time to fix it.
+1. It doesn't highlight deleted lines on just-renamed files since GitHub's HTML doesn't usually contain enough information to do that.
 
 ## TL;DR
 
@@ -28,7 +29,7 @@ This extension rocks and you should use it until it breaks inexplicably
 
 ### Safari
 
-[Download the Safari extension](https://github.com/msolomon/github-diff-syntax-highlighter/releases/download/v1.0.0/github-diff-syntax-highlighter.safariextz) and run it.
+[Download the Safari extension](https://github.com/msolomon/github-diff-syntax-highlighter/releases/download/v1.0.4/github-diff-syntax-highlighter.safariextz) and run it.
 
 ### Chrome
 
