@@ -385,11 +385,13 @@
   })();
 
   DiffProcessor = (function() {
-    var binRegex, endsInShaRegex;
+    var binRegex, endsInShaRegex, permalinkShasRegex;
 
     endsInShaRegex = /[0-9a-fA-F]{40}$/;
 
     binRegex = /bin/i;
+
+    permalinkShasRegex = /compare\/[^:]*:([^.]*)...[^:]*:([^\/]*)/;
 
     function DiffProcessor() {
       this.refreshDataAndHighlight = __bind(this.refreshDataAndHighlight, this);      this.currentRepoPath = '';
@@ -420,6 +422,12 @@
       return mutationObserver;
     };
 
+    DiffProcessor.prototype.getPartialShaFromMergingPermalink = function(index) {
+      var _ref, _ref1, _ref2;
+
+      return (_ref = document.querySelector('a.js-permalink-shortcut')) != null ? (_ref1 = _ref.href) != null ? (_ref2 = _ref1.match(permalinkShasRegex)) != null ? _ref2[index + 1] : void 0 : void 0 : void 0;
+    };
+
     DiffProcessor.prototype.getMergingBranchCommitIdentifier = function(index) {
       var element, _ref;
 
@@ -432,8 +440,9 @@
 
       result = this.getMergingBranchFromFromComment();
       result || (result = (_ref = document.querySelector('.commit a')) != null ? (_ref1 = _ref.href) != null ? (_ref2 = _ref1.match(/[a-f0-9]{40}$/)) != null ? _ref2[0] : void 0 : void 0 : void 0);
-      result || (result = (_ref3 = document.body.innerHTML.match(/commit\/([a-f0-9]{40})/)) != null ? _ref3[1] : void 0);
-      return result || this.getMergingBranchCommitIdentifier(1);
+      result || (result = this.getPartialShaFromMergingPermalink(1));
+      result || (result = this.getMergingBranchCommitIdentifier(1));
+      return result || ((_ref3 = document.body.innerHTML.match(/commit\/([a-f0-9]{40})/)) != null ? _ref3[1] : void 0);
     };
 
     DiffProcessor.prototype.getMergingBranchFromFromComment = function() {
@@ -469,7 +478,7 @@
           _results.push((_ref1 = endsInShaRegex.exec(e.href)) != null ? _ref1[0] : void 0);
         }
         return _results;
-      })()) || dropNonexisting([this.getMergingBranchCommitIdentifier(0)]);
+      })()) || dropNonexisting([this.getPartialShaFromMergingPermalink(0)]) || dropNonexisting([this.getMergingBranchCommitIdentifier(0)]);
     };
 
     DiffProcessor.prototype.updateCurrentRepoPath = function() {
