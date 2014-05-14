@@ -13,9 +13,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.4</string>
+	<string>1.0.5</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.4</string>
+	<string>1.0.5</string>
 	<key>Chrome</key>
 	<dict/>
 	<key>Content</key>
@@ -36,7 +36,7 @@
 	<key>Description</key>
 	<string>Use GitHub's own syntax highlighting for diffs on GitHub</string>
 	<key>ExtensionInfoDictionaryVersion</key>
-	<string>1.0.4</string>
+	<string>1.0.5</string>
 	<key>Permissions</key>
 	<dict>
 		<key>Website Access</key>
