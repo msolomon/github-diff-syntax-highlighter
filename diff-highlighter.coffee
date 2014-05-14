@@ -222,6 +222,7 @@ class Line
 class DiffProcessor
     endsInShaRegex = /[0-9a-fA-F]{40}$/
     binRegex = /bin/i
+    permalinkShasRegex = /compare\/[^:]*:([^.]*)...[^:]*:([^\/]*)/
 
     constructor: ->
         @currentRepoPath = ''
@@ -248,6 +249,9 @@ class DiffProcessor
         mutationObserver.observe document, observerConfig
         mutationObserver
 
+    getPartialShaFromMergingPermalink: (index) ->
+        document.querySelector('a.js-permalink-shortcut')?.href?.match(permalinkShasRegex)?[index + 1]
+
     getMergingBranchCommitIdentifier: (index) ->
         element = document.querySelectorAll('#js-discussion-header .gh-header-meta span.commit-ref.current-branch span')[index] ||
             document.querySelectorAll('.branch-name span.js-selectable-text')[index]
@@ -256,8 +260,9 @@ class DiffProcessor
     getGuessAtCurrentCommitIdentifier: ->
         result = @getMergingBranchFromFromComment()
         result ||= document.querySelector('.commit a')?.href?.match(/[a-f0-9]{40}$/)?[0]
-        result ||= document.body.innerHTML.match(/commit\/([a-f0-9]{40})/)?[1]
-        result || @getMergingBranchCommitIdentifier 1
+        result ||= @getPartialShaFromMergingPermalink 1
+        result ||= @getMergingBranchCommitIdentifier 1
+        result || document.body.innerHTML.match(/commit\/([a-f0-9]{40})/)?[1]
 
     getMergingBranchFromFromComment: ->
         result = /head sha1: &quot;([0-9a-fA-F]{40})&quot;/.exec(document.body.innerHTML)?[1]
@@ -270,6 +275,7 @@ class DiffProcessor
     getParentCommitIdentifiers: ->
         notEmpty(dropNonexisting([@getMergingBranchTo()])) ||
         notEmpty(endsInShaRegex.exec(e.href)?[0] for e in document.querySelectorAll('.commit-meta .sha-block a.sha')) ||
+        dropNonexisting([@getPartialShaFromMergingPermalink 0]) ||
         dropNonexisting([@getMergingBranchCommitIdentifier 0])
 
     updateCurrentRepoPath: ->
