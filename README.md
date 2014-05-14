@@ -36,7 +36,7 @@ This extension rocks and you should use it until it breaks inexplicably
 [Visit the Chrome web store](https://chrome.google.com/webstore/detail/github-diff-syntax-highli/dgkfbihjnombgekdpemmggglcpnmoich) and install the extension.
 
 ### Firefox
-[Get the Firefox add-on](https://addons.mozilla.org/en-US/firefox/addon/github-diff-syntax-highlighter/)
+[Get the Firefox add-on](https://github.com/msolomon/github-diff-syntax-highlighter/releases/download/v1.0.4/github-diff-syntax-highlighter.xpi)
 
 
 ------------------------
