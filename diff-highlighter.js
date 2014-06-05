@@ -466,20 +466,6 @@
     DiffProcessor.prototype.getParentCommitIdentifiers = function() {
       var e;
 
-      console.log(notEmpty(dropNonexisting([this.getMergingBranchTo()])));
-      console.log(notEmpty((function() {
-        var _i, _len, _ref, _ref1, _results;
-
-        _ref = document.querySelectorAll('.commit-meta .sha-block a.sha');
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          e = _ref[_i];
-          _results.push((_ref1 = endsInShaRegex.exec(e.href)) != null ? _ref1[0] : void 0);
-        }
-        return _results;
-      })()));
-      console.log(dropNonexisting([this.getPartialShaFromMergingPermalink(0)]));
-      console.log(dropNonexisting([this.getMergingBranchCommitIdentifier(0)]));
       return notEmpty(dropNonexisting([this.getMergingBranchTo()])) || notEmpty((function() {
         var _i, _len, _ref, _ref1, _results;
 
@@ -794,8 +780,7 @@
         return;
       }
       this.diffData = this.getRegularDiffData();
-      this.highlight();
-      return console.log(this);
+      return this.highlight();
     };
 
     return DiffProcessor;
