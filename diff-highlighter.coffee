@@ -232,11 +232,9 @@ class DiffProcessor
         @updateCommitIdentifiers()
 
         @changedFilePaths = []
-        @inlineChangedFilePaths = []
         @updateChangedFilePaths()
 
         @diffData = @getRegularDiffData()
-        @inlineDiffData = @getInlineDiffData()
 
         @parentData = {}
         @currentData = {}
@@ -273,6 +271,11 @@ class DiffProcessor
     getMergingBranchFrom: -> @getMergingBranchFromFromComment()
 
     getParentCommitIdentifiers: ->
+        console.log notEmpty(dropNonexisting([@getMergingBranchTo()]))
+        console.log notEmpty(endsInShaRegex.exec(e.href)?[0] for e in document.querySelectorAll('.commit-meta .sha-block a.sha'))
+        console.log dropNonexisting([@getPartialShaFromMergingPermalink 0])
+        console.log dropNonexisting([@getMergingBranchCommitIdentifier 0])
+
         notEmpty(dropNonexisting([@getMergingBranchTo()])) ||
         notEmpty(endsInShaRegex.exec(e.href)?[0] for e in document.querySelectorAll('.commit-meta .sha-block a.sha')) ||
         dropNonexisting([@getPartialShaFromMergingPermalink 0]) ||
@@ -310,11 +313,6 @@ class DiffProcessor
             changed = true
         @changedFilePaths = changedFilePaths
 
-        inlineChangedFilePaths = @getInlineChangedFilePaths()
-        if addedElements(@inlineChangedFilePaths, inlineChangedFilePaths)
-            changed = true
-        @inlineChangedFilePaths = inlineChangedFilePaths
-
         changed
 
     getChangedFilePaths: ->
@@ -328,9 +326,6 @@ class DiffProcessor
                 path = link.parentElement?.parentElement?.getAttribute('data-path')
             path
 
-    getInlineChangedFilePaths: ->
-        e.getAttribute('data-path') for e in document.querySelectorAll('.inline-review-comment .box-header')
-
     getLinesToMerge: (filePath, line) ->
         if line.diffAdded() or line.diffUnchanged()
             dropNonexisting [@currentData[filePath]?.getLine(line.lineNumber)]
@@ -340,8 +335,6 @@ class DiffProcessor
             []
 
     highlight: ->
-
-        @highlightDiffData @inlineDiffData
         @highlightDiffData @diffData
 
     highlightDiffData: (diffData) ->
@@ -414,9 +407,6 @@ class DiffProcessor
     getRegularDiffData: ->
         @getDiffData document.querySelectorAll('.file'), @changedFilePaths
 
-    getInlineDiffData: ->
-        @getDiffData document.querySelectorAll('.inline-review-comment .file-diff'), @inlineChangedFilePaths
-
     getDiffData: (changedFileElements, changedFilePaths) ->
         diffData = {}
 
@@ -451,8 +441,8 @@ class DiffProcessor
             window.diffProcessor.fetchAndHighlight()
             return
         @diffData = @getRegularDiffData()
-        @inlineDiffData = @getInlineDiffData()
         @highlight()
+        console.log this
 
 ## Bootstrap and run
 
