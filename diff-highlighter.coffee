@@ -271,11 +271,6 @@ class DiffProcessor
     getMergingBranchFrom: -> @getMergingBranchFromFromComment()
 
     getParentCommitIdentifiers: ->
-        console.log notEmpty(dropNonexisting([@getMergingBranchTo()]))
-        console.log notEmpty(endsInShaRegex.exec(e.href)?[0] for e in document.querySelectorAll('.commit-meta .sha-block a.sha'))
-        console.log dropNonexisting([@getPartialShaFromMergingPermalink 0])
-        console.log dropNonexisting([@getMergingBranchCommitIdentifier 0])
-
         notEmpty(dropNonexisting([@getMergingBranchTo()])) ||
         notEmpty(endsInShaRegex.exec(e.href)?[0] for e in document.querySelectorAll('.commit-meta .sha-block a.sha')) ||
         dropNonexisting([@getPartialShaFromMergingPermalink 0]) ||
@@ -442,7 +437,6 @@ class DiffProcessor
             return
         @diffData = @getRegularDiffData()
         @highlight()
-        console.log this
 
 ## Bootstrap and run
 
