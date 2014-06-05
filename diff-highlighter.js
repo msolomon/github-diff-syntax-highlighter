@@ -400,10 +400,8 @@
       this.parentCommitIdentifiers = '';
       this.updateCommitIdentifiers();
       this.changedFilePaths = [];
-      this.inlineChangedFilePaths = [];
       this.updateChangedFilePaths();
       this.diffData = this.getRegularDiffData();
-      this.inlineDiffData = this.getInlineDiffData();
       this.parentData = {};
       this.currentData = {};
       this.mutationObserver = this.getMutationObserver();
@@ -468,6 +466,20 @@
     DiffProcessor.prototype.getParentCommitIdentifiers = function() {
       var e;
 
+      console.log(notEmpty(dropNonexisting([this.getMergingBranchTo()])));
+      console.log(notEmpty((function() {
+        var _i, _len, _ref, _ref1, _results;
+
+        _ref = document.querySelectorAll('.commit-meta .sha-block a.sha');
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          e = _ref[_i];
+          _results.push((_ref1 = endsInShaRegex.exec(e.href)) != null ? _ref1[0] : void 0);
+        }
+        return _results;
+      })()));
+      console.log(dropNonexisting([this.getPartialShaFromMergingPermalink(0)]));
+      console.log(dropNonexisting([this.getMergingBranchCommitIdentifier(0)]));
       return notEmpty(dropNonexisting([this.getMergingBranchTo()])) || notEmpty((function() {
         var _i, _len, _ref, _ref1, _results;
 
@@ -511,7 +523,7 @@
     };
 
     DiffProcessor.prototype.updateChangedFilePaths = function() {
-      var changed, changedFilePaths, inlineChangedFilePaths;
+      var changed, changedFilePaths;
 
       changed = false;
       changedFilePaths = this.getChangedFilePaths();
@@ -519,11 +531,6 @@
         changed = true;
       }
       this.changedFilePaths = changedFilePaths;
-      inlineChangedFilePaths = this.getInlineChangedFilePaths();
-      if (addedElements(this.inlineChangedFilePaths, inlineChangedFilePaths)) {
-        changed = true;
-      }
-      this.inlineChangedFilePaths = inlineChangedFilePaths;
       return changed;
     };
 
@@ -542,18 +549,6 @@
           path = (_ref2 = link.parentElement) != null ? (_ref3 = _ref2.parentElement) != null ? _ref3.getAttribute('data-path') : void 0 : void 0;
         }
         _results.push(path);
-      }
-      return _results;
-    };
-
-    DiffProcessor.prototype.getInlineChangedFilePaths = function() {
-      var e, _i, _len, _ref, _results;
-
-      _ref = document.querySelectorAll('.inline-review-comment .box-header');
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        e = _ref[_i];
-        _results.push(e.getAttribute('data-path'));
       }
       return _results;
     };
@@ -581,7 +576,6 @@
     };
 
     DiffProcessor.prototype.highlight = function() {
-      this.highlightDiffData(this.inlineDiffData);
       return this.highlightDiffData(this.diffData);
     };
 
@@ -746,10 +740,6 @@
       return this.getDiffData(document.querySelectorAll('.file'), this.changedFilePaths);
     };
 
-    DiffProcessor.prototype.getInlineDiffData = function() {
-      return this.getDiffData(document.querySelectorAll('.inline-review-comment .file-diff'), this.inlineChangedFilePaths);
-    };
-
     DiffProcessor.prototype.getDiffData = function(changedFileElements, changedFilePaths) {
       var diffData, e, file, i, line, lineContainer, lineContents, lineNumberCurrent, lineNumberElements, lineNumberPrevious, lines, path, _i, _j, _len, _len1, _ref, _ref1;
 
@@ -804,8 +794,8 @@
         return;
       }
       this.diffData = this.getRegularDiffData();
-      this.inlineDiffData = this.getInlineDiffData();
-      return this.highlight();
+      this.highlight();
+      return console.log(this);
     };
 
     return DiffProcessor;
