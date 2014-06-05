@@ -7,7 +7,7 @@
 	<key>Builder Version</key>
 	<string>9537.75.14</string>
 	<key>CFBundleDisplayName</key>
-	<string>GitHub submodule links</string>
+	<string>GitHub diff syntax highlighter</string>
 	<key>CFBundleIdentifier</key>
 	<string>io.msol.github-diff-syntax-highlighter</string>
 	<key>CFBundleInfoDictionaryVersion</key>
