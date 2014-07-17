@@ -415,9 +415,9 @@ class DiffProcessor
                     lineNumberElements = line.querySelectorAll('.diff-line-num')
                     [lineNumberPrevious, lineNumberCurrent] = (parseInt(e.getAttribute('data-line-number')) for e in lineNumberElements)
                     lineNumberCurrent ||= parseInt(line.getAttribute('data-line'))
-                    lineContainer = line.querySelector('.diff-line-pre')
+                    lineContainer = line.querySelector('.diff-line-code')
                     if lineContainer
-                        lineContents = lineContainer.innerHTML
+                        lineContents = lineContainer.innerText
                         file.storeDiffLine lineContainer, lineContents, lineNumberPrevious, lineNumberCurrent
         diffData
 
