@@ -751,9 +751,9 @@
               return _results;
             })(), lineNumberPrevious = _ref1[0], lineNumberCurrent = _ref1[1];
             lineNumberCurrent || (lineNumberCurrent = parseInt(line.getAttribute('data-line')));
-            lineContainer = line.querySelector('.diff-line-pre');
+            lineContainer = line.querySelector('.diff-line-code');
             if (lineContainer) {
-              lineContents = lineContainer.innerHTML;
+              lineContents = lineContainer.innerText;
               file.storeDiffLine(lineContainer, lineContents, lineNumberPrevious, lineNumberCurrent);
             }
           }
