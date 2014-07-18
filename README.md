@@ -28,16 +28,16 @@ This extension rocks and you should use it until it breaks inexplicably
 
 ## Installation
 
-### Safari
-
-[Download the Safari extension](https://github.com/msolomon/github-diff-syntax-highlighter/releases/download/v1.0.7/github-diff-syntax-highlighter.safariextz) and run it.
-
 ### Chrome
 
 [Visit the Chrome web store](https://chrome.google.com/webstore/detail/github-diff-syntax-highli/dgkfbihjnombgekdpemmggglcpnmoich) and install the extension.
 
 ### Firefox
-[Get the Firefox add-on](https://github.com/msolomon/github-diff-syntax-highlighter/releases/download/v1.0.7/github-diff-syntax-highlighter.xpi)
+Clone then build with `make` and bundle with cfx/jetpack (too little demand for me to do this for each release).
+
+### Safari
+
+Clone then build with `make` and bundle in Safari (too little demand for me to do this for each release).
 
 
 ------------------------
