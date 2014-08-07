@@ -33,11 +33,28 @@ This extension rocks and you should use it until it breaks inexplicably
 [Visit the Chrome web store](https://chrome.google.com/webstore/detail/github-diff-syntax-highli/dgkfbihjnombgekdpemmggglcpnmoich) and install the extension.
 
 ### Firefox
-Clone then build with `make` and bundle with cfx/jetpack (too little demand for me to do this for each release).
+Clone, then build with `make` and bundle with `cfx xpi build/firefox/` (too little demand for me to do this for each release). The `cfx` command is provided by Mozilla’s [Jetpack](https://wiki.mozilla.org/Jetpack) – see its [installation instructions](https://developer.mozilla.org/en-US/Add-ons/SDK/Tutorials/Installation). Install the generated file `github-diff-syntax-highlighter.xpi` by opening it in Firefox.
+
+For convenience, here are the commands to build and install the project for the first time on a Mac with [Homebrew](http://brew.sh/):
+
+~~~sh
+# install dependencies with Homebrew
+brew install wget  # wget is needed by the Makefile
+brew install mozilla-addon-sdk  # cfx is needed to bundle the xpi
+# clone
+git clone git@github.com:msolomon/github-diff-syntax-highlighter.git
+cd github-diff-syntax-highlighter
+# build
+make
+cd build
+cfx xpi firefox/
+# install in Firefox
+open -a Firefox github-diff-syntax-highlighter.xpi
+~~~
 
 ### Safari
 
-Clone then build with `make` and bundle in Safari (too little demand for me to do this for each release).
+Clone, then build with `make` and bundle in Safari (too little demand for me to do this for each release).
 
 
 ------------------------
