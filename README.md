@@ -46,7 +46,8 @@ git clone git@github.com:msolomon/github-diff-syntax-highlighter.git
 cd github-diff-syntax-highlighter
 # build
 make
-cfx xpi build/firefox/
+cd build
+cfx xpi firefox/
 # install in Firefox
 open -a Firefox github-diff-syntax-highlighter.xpi
 ~~~
