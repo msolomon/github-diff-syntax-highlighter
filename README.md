@@ -4,6 +4,12 @@ Use GitHub's own syntax highlighting for diffs on GitHub
 
 ------------------------
 
+### Note: this extension is now unnecessary
+
+On December 9, 2014, GitHub finally implemented this functionality on the server-side. See GitHub’s announcement [“Syntax Highlighted Diffs”](https://github.com/blog/1932-syntax-highlighted-diffs). Thus, this extension is unnecessary and will be discontinued. Enjoy your diff-reading!
+
+------------------------
+
 GitHub doesn't syntax highlight inside diffs. This extension fixes that.
 
 [Other extensions](https://github.com/danielribeiro/github-diff-highlight-extension) already exist that use a Javascript syntax highlighter to perform a similar task, but this extension instead requests the highligted HTML directly from GitHub and merges it into the page.
